@@ -1,0 +1,21 @@
+# Dev muhiti: PostgreSQL (event store). Parollar faqat lokal dev uchun.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: omonat_owner
+      POSTGRES_PASSWORD: omonat_owner_dev
+      POSTGRES_DB: omonat
+    ports:
+      - "127.0.0.1:5442:5432"
+    volumes:
+      - omonat-pg:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-roles.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omonat_owner -d omonat"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  omonat-pg:
